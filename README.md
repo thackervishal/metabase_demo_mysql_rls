@@ -10,6 +10,7 @@ Row-level security in **Metabase Enterprise** via MySQL 8 connection impersonati
 
 All passwords: `metabot1`
 
+Demo recording: https://youtu.be/alAtSVh5tmQ
 ---
 
 ## Prerequisites
