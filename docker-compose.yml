@@ -1,0 +1,51 @@
+services:
+  app-db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: metabaseappdb
+      POSTGRES_USER: metabase
+      POSTGRES_PASSWORD: metabase_app_password
+    volumes:
+      - app_db_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U metabase -d metabaseappdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  mysql:
+    image: metabase/qa-databases:mysql-sample-8
+    ports:
+      - "3366:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysql", "-h", "127.0.0.1", "-u", "metabase", "-pmetasample123", "sample", "-e", "SELECT 1 FROM REVIEWS LIMIT 1;"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  metabase:
+    image: metabase/metabase-enterprise:v${MB_IMAGE_TAG}
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: metabaseappdb
+      MB_DB_PORT: 5432
+      MB_DB_USER: metabase
+      MB_DB_PASS: metabase_app_password
+      MB_DB_HOST: app-db
+      MB_PREMIUM_EMBEDDING_TOKEN: ${MB_PREMIUM_EMBEDDING_TOKEN}
+      MB_CONFIG_FILE_PATH: /metabase-config/config.yml
+    ports:
+      - "${METABASE_PORT:-3300}:3000"
+    volumes:
+      - ./seed/config.yml:/metabase-config/config.yml:ro
+    depends_on:
+      app-db:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+
+volumes:
+  app_db_data:
+  mysql_data:

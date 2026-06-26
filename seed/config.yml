@@ -1,0 +1,39 @@
+version: 1
+config:
+  settings:
+    site-name: MySQL RLS Demo
+    site-locale: en
+    allow-tracking: false
+  users:
+    - first_name: Demo
+      last_name: Admin
+      email: admin@example.com
+      password: metabot1
+      is_superuser: true
+    - first_name: Bruce
+      last_name: Wayne
+      email: bruce@example.com
+      password: metabot1
+    - first_name: Thor
+      last_name: Odinson
+      email: thor@example.com
+      password: metabot1
+    - first_name: Frodo
+      last_name: Baggins
+      email: frodo@example.com
+      password: metabot1
+  api-keys:
+    - name: Demo Admin Key
+      creator: admin@example.com
+      group: admin
+      key: mb_aDqk1Tc4ZotWb2TyjHY71glALKlBg75dLgmSufWGLc=
+  databases:
+    - name: sample_mysql
+      engine: mysql
+      details:
+        host: mysql
+        port: 3306
+        user: metabase
+        password: metasample123
+        dbname: sample
+        ssl: false
